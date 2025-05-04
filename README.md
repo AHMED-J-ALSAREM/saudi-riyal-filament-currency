@@ -1,19 +1,14 @@
-# Saudi Riyal Symbol Plugin for Filament
+# Saudi Riyal Symbol Plugin for Laravel
 
-حزمة بسيطة لـ Laravel Filament تقوم باستبدال رمز الريال السعودي (SAR, ر.س) تلقائياً بأيقونة الخط الجديد في جميع أنحاء لوحة التحكم.
+حزمة لارافيل بسيطة وفعالة لاستبدال رموز الريال السعودي (SAR, ر.س, ر.س.) تلقائياً في جميع أنحاء التطبيق.
 
 ## المميزات
 
-- استبدال تلقائي لجميع أشكال رمز الريال السعودي:
-  - SAR (الرمز الدولي)
-  - ر.س (الرمز العربي)
-  - ريال سعودي (الاسم الكامل)
-  - ريال (الاسم المختصر)
-  - SR (اختصار آخر)
-  - ﷼ (رمز الريال Unicode)
-- دعم كامل للغة العربية (RTL)
-- تثبيت سهل وتشغيل فوري
-- لا يؤثر على أي تنسيقات أو عملات أخرى
+- استبدال تلقائي لرموز الريال السعودي في جميع أنحاء التطبيق
+- دعم جميع أشكال الرمز (SAR, ر.س, ر.س.)
+- لا حاجة لاستدعاء أي دوال إضافية
+- يعمل على مستوى النظام كامل
+- سهل التثبيت والاستخدام
 
 ## التثبيت
 
@@ -21,56 +16,71 @@
 composer require ahmed-j-alsarem/saudi-riyal-filament-currency
 ```
 
+## الإعداد
+
+1. أضف مزود الخدمة في ملف `config/app.php`:
+```php
+'providers' => [
+    // ...
+    AhmedJAlsarem\SaudiRiyal\FilamentCurrency\SaudiRiyalSymbolServiceProvider::class,
+],
+```
+
+2. أضف ملف CSS في `app/Providers/AdminPanelProvider.php`:
+```php
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        ->default()
+        ->id('admin')
+        ->path('admin')
+        ->assets([
+            Css::make('saudi-riyal-symbol', 'https://cdn.jsdelivr.net/npm/@emran-alhaddad/saudi-riyal-font/index.css'),
+        ]);
+}
+```
+
 ## الاستخدام
 
-### في أعمدة الجداول
+بعد التثبيت والإعداد، سيتم تلقائياً:
+- استبدال "SAR" بـ `<span class="icon-saudi_riyal"></span>`
+- استبدال "ر.س" بـ `<span class="icon-saudi_riyal"></span>`
+- استبدال "ر.س." بـ `<span class="icon-saudi_riyal"></span>`
+
+### أمثلة
 
 ```php
-use Filament\Tables\Columns\TextColumn;
+// قبل: "100 SAR"
+// بعد: "100 <span class="icon-saudi_riyal"></span>"
 
-TextColumn::make('price')
-    ->money('SAR') // أو 'ر.س'
-    ->formatStateUsing(fn($state) => app('blade.compiler')->compileString("@saudiRiyalSymbol('{$state}')"))
-    ->html();
+// قبل: "100 ر.س"
+// بعد: "100 <span class="icon-saudi_riyal"></span>"
+
+// قبل: "100 ر.س."
+// بعد: "100 <span class="icon-saudi_riyal"></span>"
 ```
 
-### في حقول النماذج
+## التغطية
 
-```php
-use Filament\Forms\Components\TextInput;
+يعمل الباكدج على:
+- جميع العروض (Views)
+- جميع النصوص في التطبيق
+- جميع الاستجابات (Responses)
+- جميع أشكال الرمز مع أو بدون مسافات
 
-TextInput::make('price')
-    ->money('SAR') // أو 'ر.س'
-    ->formatStateUsing(fn($state) => app('blade.compiler')->compileString("@saudiRiyalSymbol('{$state}')"))
-    ->html();
-```
+## المساهمة
 
-### في أي مكان في Blade
-
-```blade
-@saudiRiyalSymbol($amount)
-```
-
-## مثال عملي
-
-قبل البلجن:
-```php
-"100 SAR" -> "100 SAR"
-"100 ر.س" -> "100 ر.س"
-"100 ريال سعودي" -> "100 ريال سعودي"
-```
-
-بعد البلجن:
-```php
-"100 SAR" -> "100 <span class='icon-saudi_riyal'></span>"
-"100 ر.س" -> "100 <span class='icon-saudi_riyal'></span>"
-"100 ريال سعودي" -> "100 <span class='icon-saudi_riyal'></span>"
-```
-
-## التخصيص
-
-إذا أردت إضافة أشكال أخرى لرمز الريال السعودي، يمكنك تعديل ملف `src/Helpers.php` وإضافة الرموز الجديدة في مصفوفة `$symbols`.
+نرحب بمساهماتكم! يرجى اتباع الخطوات التالية:
+1. Fork المشروع
+2. إنشاء فرع جديد (`git checkout -b feature/amazing-feature`)
+3. Commit التغييرات (`git commit -m 'Add some amazing feature'`)
+4. Push إلى الفرع (`git push origin feature/amazing-feature`)
+5. فتح Pull Request
 
 ## الترخيص
 
-الترخيص MIT. راجع ملف [LICENSE](LICENSE.md) للمزيد من المعلومات. 
+هذا المشروع مرخص تحت [MIT License](LICENSE.md).
+
+## الدعم
+
+إذا واجهتك أي مشكلة أو لديك أي استفسار، يرجى فتح issue في GitHub. 
