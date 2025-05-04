@@ -34,6 +34,16 @@ class SaudiRiyalSymbolServiceProvider extends ServiceProvider
         $this->app->bind('saudi-riyal-formatter', function () {
             return new SaudiRiyalFormatter();
         });
+
+        // استبدال في Livewire responses
+        $this->app->afterResolving('livewire', function ($livewire) {
+            $livewire->setResponse(function ($response) {
+                if (is_string($response)) {
+                    return SaudiRiyalFormatter::replaceSymbols($response);
+                }
+                return $response;
+            });
+        });
     }
 
     public function register(): void

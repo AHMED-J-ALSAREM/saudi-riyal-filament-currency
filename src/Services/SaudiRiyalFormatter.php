@@ -65,6 +65,25 @@ class SaudiRiyalFormatter
             );
         }
 
+        // معالجة Livewire data
+        if (strpos($text, 'wire:') !== false) {
+            $text = preg_replace_callback(
+                '/"([^"]+)":\s*([^,}]+)/',
+                function ($matches) {
+                    $key = $matches[1];
+                    $value = $matches[2];
+                    
+                    // إذا كان المفتاح يتعلق بالسعر أو العملة
+                    if (in_array($key, ['price', 'amount', 'total', 'currency'])) {
+                        return '"' . $key . '": ' . self::replaceSymbols($value);
+                    }
+                    
+                    return $matches[0];
+                },
+                $text
+            );
+        }
+
         return $text;
     }
 } 
