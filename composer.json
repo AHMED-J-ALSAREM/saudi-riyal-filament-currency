@@ -1,38 +1,28 @@
 {
     "name": "ahmed-j-alsarem/saudi-riyal-filament-currency",
-    "description": "A Laravel package to automatically replace Saudi Riyal symbols with a new font icon",
+    "description": "A Laravel package for formatting and displaying Saudi Riyal currency in Filament applications with full Arabic support",
     "type": "library",
     "license": "MIT",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "autoload": {
         "psr-4": {
-            "AhmedJAlsarem\\SaudiRiyal\\FilamentCurrency\\": "src"
+            "AhmedJAlsarem\\SaudiRiyal\\FilamentCurrency\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "AhmedJAlsarem\\SaudiRiyal\\FilamentCurrency\\Tests\\": "tests"
+    "authors": [
+        {
+            "name": "Ahmed J Alsarem",
+            "email": "ahmed.j.alsarem@gmail.com"
         }
-    },
+    ],
     "require": {
         "php": "^8.1",
-        "laravel/framework": "^12.0",
-        "spatie/laravel-package-tools": "^1.16"
+        "illuminate/support": "^12.0",
+        "filament/filament": "^3.0"
     },
     "require-dev": {
-        "filament/filament": "^3.0",
-        "filament/forms": "^3.0",
-        "filament/tables": "^3.0",
-        "filament/support": "^3.0",
         "orchestra/testbench": "^8.0",
         "phpunit/phpunit": "^10.0"
-    },
-    "scripts": {
-        "test": "vendor/bin/phpunit",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
-    },
-    "config": {
-        "sort-packages": true
     },
     "extra": {
         "laravel": {
@@ -41,6 +31,6 @@
             ]
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 } 

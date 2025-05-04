@@ -1,15 +1,15 @@
-# Saudi Riyal Symbol Plugin for Laravel
+# Saudi Riyal Filament Currency
 
-حزمة لارافيل بسيطة وفعالة لاستبدال رموز الريال السعودي (SAR, ر.س, ر.س.) تلقائياً في جميع أنحاء التطبيق.
+حزمة لارافيل لتنسيق وعرض الريال السعودي في تطبيقات Filament مع دعم كامل للغة العربية.
 
 ## المميزات
 
-- استبدال تلقائي لرموز الريال السعودي في جميع أنحاء التطبيق
-- دعم جميع أشكال الرمز (SAR, ر.س, ر.س.)
-- لا حاجة لاستدعاء أي دوال إضافية
-- يعمل على مستوى النظام كامل
-- سهل التثبيت والاستخدام
-- دعم كامل لـ Laravel Filament
+- استبدال تلقائي لرموز الريال السعودي (SAR، ر.س، ر.س.)
+- دعم كامل للغة العربية
+- تكامل مع Filament
+- دعم Livewire
+- تنسيق تلقائي للأرقام
+- إمكانية التحكم اليدوي في الاستبدال
 
 ## التثبيت
 
@@ -19,100 +19,153 @@ composer require ahmed-j-alsarem/saudi-riyal-filament-currency
 
 ## الإعداد
 
-### الإعداد الأساسي
-
-1. أضف مزود الخدمة في ملف `config/app.php`:
+1. أضف Service Provider في `config/app.php`:
 ```php
 'providers' => [
     // ...
     AhmedJAlsarem\SaudiRiyal\FilamentCurrency\SaudiRiyalSymbolServiceProvider::class,
-],
+]
 ```
 
-### دعم Laravel Filament
-
-إذا كنت تستخدم Laravel Filament، يمكنك إضافة دعم الرمز بطريقتين:
-
-#### الطريقة الأولى: من خلال AdminPanelProvider
+2. أضف ملف CSS في `app/Providers/AdminPanelProvider.php`:
 ```php
-// app/Providers/AdminPanelProvider.php
-use Filament\Panel;
-use Filament\PanelProvider;
-use Filament\Support\Assets\Css;
-
-class AdminPanelProvider extends PanelProvider
+public function panel(Panel $panel): Panel
 {
-    public function panel(Panel $panel): Panel
-    {
-        return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
-            ->assets([
-                Css::make('saudi-riyal-symbol', 'https://cdn.jsdelivr.net/npm/@emran-alhaddad/saudi-riyal-font/index.css'),
-            ]);
-    }
-}
-```
-
-#### الطريقة الثانية: من خلال AppServiceProvider
-```php
-// app/Providers/AppServiceProvider.php
-use Filament\Support\Facades\FilamentAsset;
-use Filament\Support\Assets\Css;
-
-class AppServiceProvider extends ServiceProvider
-{
-    public function boot(): void
-    {
-        FilamentAsset::register([
-            Css::make('saudi-riyal-symbol', 'https://cdn.jsdelivr.net/npm/@emran-alhaddad/saudi-riyal-font/index.css'),
+    return $panel
+        ->default()
+        ->id('admin')
+        ->path('admin')
+        ->login()
+        ->colors([
+            'primary' => Color::Amber,
+        ])
+        ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+        ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+        ->pages([
+            Pages\Dashboard::class,
+        ])
+        ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+        ->widgets([
+            Widgets\AccountWidget::class,
+            Widgets\FilamentInfoWidget::class,
+        ])
+        ->middleware([
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            DisableBladeIconComponents::class,
+            DispatchServingFilamentEvent::class,
+        ])
+        ->authMiddleware([
+            Authenticate::class,
+        ])
+        ->viteTheme('resources/css/filament/admin/theme.css')
+        ->assets([
+            'https://cdn.jsdelivr.net/npm/@emran-alhaddad/saudi-riyal-font/index.css',
         ]);
-    }
 }
 ```
 
 ## الاستخدام
 
-بعد التثبيت والإعداد، سيتم تلقائياً:
-- استبدال "SAR" بـ `<span class="icon-saudi_riyal"></span>`
-- استبدال "ر.س" بـ `<span class="icon-saudi_riyal"></span>`
-- استبدال "ر.س." بـ `<span class="icon-saudi_riyal"></span>`
+### 1. الاستخدام الأساسي (الاستبدال التلقائي)
 
-### أمثلة
+بمجرد تثبيت الباكدج، سيتم استبدال جميع رموز الريال السعودي تلقائياً في التطبيق. لا تحتاج لأي إعدادات إضافية.
+
+### 2. التحكم اليدوي في الاستبدال
+
+إذا كنت تريد التحكم يدوياً في مكان معين:
 
 ```php
-// قبل: "100 SAR"
-// بعد: "100 <span class="icon-saudi_riyal"></span>"
+@php
+    // تعطيل الاستبدال التلقائي
+    \AhmedJAlsarem\SaudiRiyal\FilamentCurrency\Services\SaudiRiyalFormatter::disable();
 
-// قبل: "100 ر.س"
-// بعد: "100 <span class="icon-saudi_riyal"></span>"
+    // كودك الخاص هنا
+    $price = 1000;
+    $formattedPrice = number_format($price, 2) . ' <span class="icon-saudi_riyal"></span>';
 
-// قبل: "100 ر.س."
-// بعد: "100 <span class="icon-saudi_riyal"></span>"
+    // تفعيل الاستبدال التلقائي مرة أخرى
+    \AhmedJAlsarem\SaudiRiyal\FilamentCurrency\Services\SaudiRiyalFormatter::enable();
+@endphp
 ```
 
-## التغطية
+### 3. استخدام مع Number::currency
 
-يعمل الباكدج على:
-- جميع العروض (Views)
-- جميع النصوص في التطبيق
-- جميع الاستجابات (Responses)
-- جميع أشكال الرمز مع أو بدون مسافات
-- لوحة تحكم Filament بالكامل
+```php
+@php
+    $price = 1000;
+    $formattedPrice = Number::currency($price, 'SAR', app()->getLocale());
+@endphp
+```
+
+### 4. استخدام في Filament
+
+#### في أعمدة الجداول:
+```php
+TextColumn::make('price')
+    ->formatStateUsing(function ($state) {
+        return number_format($state, 2) . ' <span class="icon-saudi_riyal"></span>';
+    })
+```
+
+#### في حقول النماذج:
+```php
+TextInput::make('price')
+    ->numeric()
+    ->formatStateUsing(function ($state) {
+        return number_format($state, 2) . ' <span class="icon-saudi_riyal"></span>';
+    })
+```
+
+### 5. استخدام في Livewire
+
+```php
+public function render()
+{
+    return view('livewire.your-component', [
+        'price' => number_format($this->price, 2) . ' <span class="icon-saudi_riyal"></span>'
+    ]);
+}
+```
+
+## أمثلة إضافية
+
+### تنسيق السعر مع اللغة العربية
+```php
+@php
+    $price = 1000;
+    $formattedPrice = app()->getLocale() === 'ar' 
+        ? number_format($price, 2, '.', ',') . ' <span class="icon-saudi_riyal"></span>'
+        : Number::currency($price, 'SAR', app()->getLocale());
+@endphp
+```
+
+### استخدام في Blade مباشرة
+```php
+<span class="price">
+    {{ number_format($price, 2) }} <span class="icon-saudi_riyal"></span>
+</span>
+```
+
+## ملاحظات مهمة
+
+1. تأكد من إضافة ملف CSS في كل صفحة تستخدم فيها الرمز
+2. يمكنك تعطيل الاستبدال التلقائي في أي وقت باستخدام `disable()`
+3. الباكدج يدعم جميع أشكال كتابة الريال السعودي (SAR، ر.س، ر.س.)
+4. يتم تنسيق الأرقام تلقائياً حسب إعدادات اللغة
 
 ## المساهمة
 
-نرحب بمساهماتكم! يرجى اتباع الخطوات التالية:
-1. Fork المشروع
-2. إنشاء فرع جديد (`git checkout -b feature/amazing-feature`)
-3. Commit التغييرات (`git commit -m 'Add some amazing feature'`)
-4. Push إلى الفرع (`git push origin feature/amazing-feature`)
-5. فتح Pull Request
+نرحب بمساهماتكم! يرجى فتح issue أو pull request للمساهمة في تحسين الباكدج.
 
 ## الترخيص
 
-هذا المشروع مرخص تحت [MIT License](LICENSE.md).
+هذا الباكدج مرخص تحت [MIT license](LICENSE.md).
 
 ## الدعم
 
