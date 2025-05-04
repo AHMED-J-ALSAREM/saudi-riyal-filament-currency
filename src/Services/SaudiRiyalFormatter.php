@@ -42,14 +42,14 @@ class SaudiRiyalFormatter
             return $text;
         }
 
-        // استبدال جميع أشكال الرمز
+        // استبدال جميع أشكال الرمز مع إضافة مسافة
         $replacements = [
-            'SAR' => '<span class="icon-saudi_riyal"></span>',
-            'ر.س' => '<span class="icon-saudi_riyal"></span>',
-            'ر.س.' => '<span class="icon-saudi_riyal"></span>',
-            'SAR ' => '<span class="icon-saudi_riyal"></span> ',
-            'ر.س ' => '<span class="icon-saudi_riyal"></span> ',
-            'ر.س. ' => '<span class="icon-saudi_riyal"></span> ',
+            'SAR' => ' <span class="icon-saudi_riyal"></span>',
+            'ر.س' => ' <span class="icon-saudi_riyal"></span>',
+            'ر.س.' => ' <span class="icon-saudi_riyal"></span>',
+            'SAR ' => ' <span class="icon-saudi_riyal"></span> ',
+            'ر.س ' => ' <span class="icon-saudi_riyal"></span> ',
+            'ر.س. ' => ' <span class="icon-saudi_riyal"></span> ',
             ' SAR' => ' <span class="icon-saudi_riyal"></span>',
             ' ر.س' => ' <span class="icon-saudi_riyal"></span>',
             ' ر.س.' => ' <span class="icon-saudi_riyal"></span>',
@@ -74,7 +74,7 @@ class SaudiRiyalFormatter
                     // إذا كانت العملة هي الريال السعودي
                     if (in_array($currency, ['SAR', 'ر.س', 'ر.س.'])) {
                         $formatted = Number::currency($price, $currency, $locale);
-                        return str_replace($currency, '<span class="icon-saudi_riyal"></span>', $formatted);
+                        return str_replace($currency, ' <span class="icon-saudi_riyal"></span>', $formatted);
                     }
                     
                     return $matches[0];
@@ -101,6 +101,9 @@ class SaudiRiyalFormatter
                 $text
             );
         }
+
+        // إضافة مسافة قبل الرمز إذا لم تكن موجودة
+        $text = preg_replace('/(\d+)(<span class="icon-saudi_riyal">)/', '$1 $2', $text);
 
         return $text;
     }

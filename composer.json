@@ -3,7 +3,7 @@
     "description": "A Laravel package for formatting and displaying Saudi Riyal currency in Filament applications with full Arabic support",
     "type": "library",
     "license": "MIT",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "autoload": {
         "psr-4": {
             "AhmedJAlsarem\\SaudiRiyal\\FilamentCurrency\\": "src/"
