@@ -1,0 +1,38 @@
+{
+    "name": "ahmed-j-alsarem/saudi-riyal-filament-currency",
+    "description": "حزمة لاستبدال رمز الريال السعودي في Filament بأيقونة الخط الجديد",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "AhmedJAlsarem\\SaudiRiyal\\FilamentCurrency\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AhmedJAlsarem\\SaudiRiyal\\FilamentCurrency\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "filament/filament": "^3.0",
+        "laravel/framework": "^10.0",
+        "spatie/laravel-package-tools": "^1.16",
+        "filament/forms": "^3.0",
+        "filament/tables": "^3.0",
+        "filament/support": "^3.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0",
+        "phpunit/phpunit": "^10.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AhmedJAlsarem\\SaudiRiyal\\FilamentCurrency\\SaudiRiyalSymbolServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+} 

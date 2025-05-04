@@ -1,0 +1,17 @@
+@import url('https://cdn.jsdelivr.net/npm/@emran-alhaddad/saudi-riyal-font/index.css');
+
+.filament-currency-symbol {
+    font-family: 'Saudi Riyal', sans-serif;
+    font-size: 1.2em;
+    margin-left: 0.25rem;
+}
+
+.filament-currency-input .prefix {
+    display: flex;
+    align-items: center;
+}
+
+.filament-currency-input .prefix .icon-saudi_riyal {
+    font-size: 1.2em;
+    margin-right: 0.25rem;
+} 
