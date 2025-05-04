@@ -3,6 +3,7 @@
     "description": "حزمة لاستبدال رمز الريال السعودي في Filament بأيقونة الخط الجديد",
     "type": "library",
     "license": "MIT",
+    "version": "1.0.0",
     "autoload": {
         "psr-4": {
             "AhmedJAlsarem\\SaudiRiyal\\FilamentCurrency\\": "src/"
