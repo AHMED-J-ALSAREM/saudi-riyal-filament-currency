@@ -9,6 +9,7 @@
 - لا حاجة لاستدعاء أي دوال إضافية
 - يعمل على مستوى النظام كامل
 - سهل التثبيت والاستخدام
+- دعم كامل لـ Laravel Filament
 
 ## التثبيت
 
@@ -18,6 +19,8 @@ composer require ahmed-j-alsarem/saudi-riyal-filament-currency
 
 ## الإعداد
 
+### الإعداد الأساسي
+
 1. أضف مزود الخدمة في ملف `config/app.php`:
 ```php
 'providers' => [
@@ -26,17 +29,46 @@ composer require ahmed-j-alsarem/saudi-riyal-filament-currency
 ],
 ```
 
-2. أضف ملف CSS في `app/Providers/AdminPanelProvider.php`:
+### دعم Laravel Filament
+
+إذا كنت تستخدم Laravel Filament، يمكنك إضافة دعم الرمز بطريقتين:
+
+#### الطريقة الأولى: من خلال AdminPanelProvider
 ```php
-public function panel(Panel $panel): Panel
+// app/Providers/AdminPanelProvider.php
+use Filament\Panel;
+use Filament\PanelProvider;
+use Filament\Support\Assets\Css;
+
+class AdminPanelProvider extends PanelProvider
 {
-    return $panel
-        ->default()
-        ->id('admin')
-        ->path('admin')
-        ->assets([
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            ->default()
+            ->id('admin')
+            ->path('admin')
+            ->assets([
+                Css::make('saudi-riyal-symbol', 'https://cdn.jsdelivr.net/npm/@emran-alhaddad/saudi-riyal-font/index.css'),
+            ]);
+    }
+}
+```
+
+#### الطريقة الثانية: من خلال AppServiceProvider
+```php
+// app/Providers/AppServiceProvider.php
+use Filament\Support\Facades\FilamentAsset;
+use Filament\Support\Assets\Css;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        FilamentAsset::register([
             Css::make('saudi-riyal-symbol', 'https://cdn.jsdelivr.net/npm/@emran-alhaddad/saudi-riyal-font/index.css'),
         ]);
+    }
 }
 ```
 
@@ -67,6 +99,7 @@ public function panel(Panel $panel): Panel
 - جميع النصوص في التطبيق
 - جميع الاستجابات (Responses)
 - جميع أشكال الرمز مع أو بدون مسافات
+- لوحة تحكم Filament بالكامل
 
 ## المساهمة
 
