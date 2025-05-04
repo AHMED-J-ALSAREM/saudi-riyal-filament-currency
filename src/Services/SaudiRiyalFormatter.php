@@ -6,6 +6,24 @@ use Illuminate\Support\Number;
 
 class SaudiRiyalFormatter
 {
+    private static $disabled = false;
+
+    /**
+     * تعطيل الاستبدال التلقائي
+     */
+    public static function disable(): void
+    {
+        self::$disabled = true;
+    }
+
+    /**
+     * تفعيل الاستبدال التلقائي
+     */
+    public static function enable(): void
+    {
+        self::$disabled = false;
+    }
+
     /**
      * Format a number as Saudi Riyal with the new symbol
      */
@@ -20,7 +38,7 @@ class SaudiRiyalFormatter
      */
     public static function replaceSymbols($text): string
     {
-        if (!is_string($text)) {
+        if (!is_string($text) || self::$disabled) {
             return $text;
         }
 
