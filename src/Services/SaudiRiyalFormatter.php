@@ -25,12 +25,19 @@ class SaudiRiyalFormatter
     }
 
     /**
-     * Format a number as Saudi Riyal with the new symbol
+     * تنسيق السعر مع الرمز
      */
-    public static function format($amount): string
+    public static function formatPrice($price, $locale = null): string
     {
-        $formatted = number_format(floatval($amount), 2);
-        return $formatted . ' <span class="icon-saudi_riyal"></span>';
+        if ($locale === null) {
+            $locale = app()->getLocale();
+        }
+
+        $formattedPrice = $locale === 'ar' 
+            ? number_format($price, 2, '.', ',')
+            : number_format($price, 2);
+
+        return $formattedPrice . ' <span class="icon-saudi_riyal"></span>';
     }
 
     /**
@@ -73,8 +80,7 @@ class SaudiRiyalFormatter
                     
                     // إذا كانت العملة هي الريال السعودي
                     if (in_array($currency, ['SAR', 'ر.س', 'ر.س.'])) {
-                        $formatted = Number::currency($price, $currency, $locale);
-                        return str_replace($currency, ' <span class="icon-saudi_riyal"></span>', $formatted);
+                        return self::formatPrice($price, $locale);
                     }
                     
                     return $matches[0];
@@ -93,6 +99,9 @@ class SaudiRiyalFormatter
                     
                     // إذا كان المفتاح يتعلق بالسعر أو العملة
                     if (in_array($key, ['price', 'amount', 'total', 'currency'])) {
+                        if (is_numeric($value)) {
+                            return '"' . $key . '": ' . self::formatPrice($value);
+                        }
                         return '"' . $key . '": ' . self::replaceSymbols($value);
                     }
                     
