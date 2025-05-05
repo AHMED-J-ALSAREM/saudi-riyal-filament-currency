@@ -9,10 +9,48 @@ use AhmedJAlsarem\SaudiRiyal\FilamentCurrency\Services\SaudiRiyalFormatter;
 
 class SaudiRiyalSymbolServiceProvider extends ServiceProvider
 {
+    /**
+     * هل الباكدج مفعل
+     */
+    protected static $enabled = true;
+
+    /**
+     * تفعيل الباكدج
+     */
+    public static function enable(): void
+    {
+        self::$enabled = true;
+    }
+
+    /**
+     * تعطيل الباكدج
+     */
+    public static function disable(): void
+    {
+        self::$enabled = false;
+    }
+
+    /**
+     * التحقق من حالة الباكدج
+     */
+    public static function isEnabled(): bool
+    {
+        return self::$enabled;
+    }
+
     public function boot(): void
     {
+        // التحقق من حالة الباكدج قبل تنفيذ أي عملية
+        if (!self::$enabled) {
+            return;
+        }
+
         // استبدال في جميع العروض
         View::composer('*', function ($view) {
+            if (!self::$enabled) {
+                return;
+            }
+
             $data = $view->getData();
             foreach ($data as $key => $value) {
                 if (is_string($value)) {
@@ -24,6 +62,10 @@ class SaudiRiyalSymbolServiceProvider extends ServiceProvider
 
         // استبدال في جميع الاستجابات
         Response::macro('replaceSymbols', function ($content) {
+            if (!self::$enabled) {
+                return $content;
+            }
+
             if (is_string($content)) {
                 return SaudiRiyalFormatter::replaceSymbols($content);
             }
@@ -37,6 +79,10 @@ class SaudiRiyalSymbolServiceProvider extends ServiceProvider
 
         // استبدال في Livewire responses
         $this->app->afterResolving('livewire', function ($livewire) {
+            if (!self::$enabled) {
+                return;
+            }
+
             $livewire->setResponse(function ($response) {
                 if (is_string($response)) {
                     return SaudiRiyalFormatter::replaceSymbols($response);
