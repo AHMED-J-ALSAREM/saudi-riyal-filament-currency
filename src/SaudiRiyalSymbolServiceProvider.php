@@ -6,13 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
 use AhmedJAlsarem\SaudiRiyal\FilamentCurrency\Services\SaudiRiyalFormatter;
-use Filament\Support\Concerns\InteractsWithForms;
 use Filament\Panel;
 
 class SaudiRiyalSymbolServiceProvider extends ServiceProvider
 {
-    use InteractsWithForms;
-
     /**
      * هل الباكدج مفعل
      */
@@ -21,7 +18,7 @@ class SaudiRiyalSymbolServiceProvider extends ServiceProvider
     /**
      * إنشاء نسخة جديدة من الباكدج
      */
-    public static function make(): static
+    public static function make(?Panel $panel = null): static
     {
         return new static();
     }
